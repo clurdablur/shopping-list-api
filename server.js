@@ -57,8 +57,20 @@ storage.items = itemArr;
 
 
 app.put('/items/:id', jsonParser, function(request, response) {
-    var item = {};
-    response.status(201).json(item);
+    //console.log(request.body.name);
+    console.log(typeof request.params.id);
+    
+    console.log(storage.items);
+for (var x = 0; x < storage.items.length; x++){
+  if (storage.items[x].id == request.params.id){
+    storage.items[x].name = request.body.name;
+    }
+}
+var items = storage.items;
+    response.status(201).json(items);
 });
 
 app.listen(process.env.PORT || 8080, process.env.IP);
+
+exports.app = app;
+exports.storage = storage;
