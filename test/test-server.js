@@ -54,13 +54,41 @@ describe('Shopping List', function() {
                 done();
             });
     });
-    it('should edit an item on PUT', function(done) {
-    chai.request(app)
-        .put('/items/:id')
-        .end(function(err, res){
-            res.should.have.status(201);
-        })
-        
+        it('should edit an item on PUT', function(done) {
+        chai.request(app)
+            .put('/items/:id')
+            .send({name: 'Milk', id: 0})
+            .end(function(err, res){
+                res.should.have.status(201);
+                res.should.be.json;
+    			res.body.should.be.an('object');
+    			res.body.should.have.property('name');
+    			res.body.should.have.property('id');
+    			res.body.id.should.be.a('number');
+    			res.body.name.should.be.a('string');
+    			res.body.id.should.equal(0);
+    			res.body.name.should.equal('Milk');
+    			items.items[0].id.should.equal(0);
+    			items.items[0].name.should.equal('Milk');
+    			done();
+    		});
+            
+        });
+        it('should delete an item on delete');
+        	chai.request(app)
+        		.delete('/items/0')
+        		.end(function(err, res) {
+        			res.should.have.status(202);
+        			res.should.be.json;
+        			res.body.should.be.an('object');
+        			res.body.should.have.property('name');
+        			res.body.should.have.property('id');
+        			res.body.id.should.be.a('number');
+        			res.body.name.should.be.a('string');
+        			res.body.id.should.equal(0);
+        			res.body.name.should.equal('Milk');
+        			items.items.length.should.equal(3);
+        			items.items[0].id.should.equal(1);
+        			done();
+        		});
     });
-    it('should delete an item on delete');
-});
