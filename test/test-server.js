@@ -1,11 +1,12 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../server.js');
-
+var chaiThings = require("chai-things");
 var should = chai.should();
 var app = server.app;
 var storage = server.storage;
 
+chai.use(chaiThings);
 chai.use(chaiHttp);
 
 describe('Shopping List', function() {
@@ -13,6 +14,7 @@ describe('Shopping List', function() {
         chai.request(app)
             .get('/items')
             .end(function(err, res) {
+                should.equal(err, null);
                 res.should.have.status(200);
                 res.should.be.json;
                 res.body.should.be.a('array');
@@ -29,7 +31,7 @@ describe('Shopping List', function() {
             });
     });
 
-        it('should add an item on POST', function(done) {
+    it('should add an item on POST', function(done) {
         chai.request(app)
             .post('/items')
             .send({'name': 'Kale'})
@@ -54,41 +56,48 @@ describe('Shopping List', function() {
                 done();
             });
     });
-        it('should edit an item on PUT', function(done) {
+    it('should edit an item on PUT', function(done) {
         chai.request(app)
-            .put('/items/:id')
-            .send({name: 'Milk', id: 0})
+            .put('/items/1')
+            .send({name: 'Eggs', id: 1})
             .end(function(err, res){
                 res.should.have.status(201);
                 res.should.be.json;
-    			res.body.should.be.an('object');
-    			res.body.should.have.property('name');
-    			res.body.should.have.property('id');
-    			res.body.id.should.be.a('number');
-    			res.body.name.should.be.a('string');
-    			res.body.id.should.equal(0);
-    			res.body.name.should.equal('Milk');
-    			items.items[0].id.should.equal(0);
-    			items.items[0].name.should.equal('Milk');
+    			res.body.should.be.an.Array;
+    			res.body[0].should.have.property('name');
+    			res.body.should.all.have.property('name');
+    			res.body.should.all.have.property('id');
+    			res.body[0].id.should.be.a('number');
+    			res.body[0].name.should.be.a('string');
+    			res.body[0].id.should.equal(1);
+    		    res.body[0].name.should.equal('Eggs');
     			done();
     		});
             
         });
-        it('should delete an item on delete');
-        	chai.request(app)
-        		.delete('/items/0')
-        		.end(function(err, res) {
-        			res.should.have.status(202);
-        			res.should.be.json;
-        			res.body.should.be.an('object');
-        			res.body.should.have.property('name');
-        			res.body.should.have.property('id');
-        			res.body.id.should.be.a('number');
-        			res.body.name.should.be.a('string');
-        			res.body.id.should.equal(0);
-        			res.body.name.should.equal('Milk');
-        			items.items.length.should.equal(3);
-        			items.items[0].id.should.equal(1);
-        			done();
-        		});
-    });
+    it('should delete an item on delete', function(done) {
+    	chai.request(app)
+    		.delete('/items/1')
+    		.end(function(err, res) {
+    			res.should.have.status(201);
+    			res.should.be.json;
+    			res.body.should.be.an.Array;
+                res.body[0].should.have.property('name');
+                res.body[0].should.have.property('id');
+                res.body[0].name.should.be.a('string');
+                res.body[0].id.should.be.a('number');
+                res.body[0].name.should.equal('Tomatoes');
+                res.body[0].id.should.equal(2);
+                storage.items.should.be.a('array');
+                storage.items.should.have.length(3);
+                storage.items[0].should.be.a('object');
+                storage.items[0].should.have.property('id');
+                storage.items[0].should.have.property('name');
+                storage.items[0].id.should.be.a('number');
+                storage.items[0].id.should.equal(2);
+                storage.items[0].name.should.be.a('string');
+                storage.items[0].name.should.equal('Tomatoes'); 
+                done();
+        	}); 
+  });
+});

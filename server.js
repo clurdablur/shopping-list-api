@@ -45,7 +45,7 @@ app.post('/items', jsonParser, function(request, response) {
 
 app.delete('/items/:id', jsonParser, function(request, response) {
     var itemArr = [];
-    console.log(request.params);
+    //console.log(request.params);
     for (var x = 0; x < storage.items.length; x++){
         if (storage.items[x].id != request.params.id){
             itemArr.push(storage.items[x]);
@@ -58,9 +58,9 @@ storage.items = itemArr;
 
 app.put('/items/:id', jsonParser, function(request, response) {
     //console.log(request.body.name);
-    console.log(typeof request.params.id);
+   // console.log(typeof request.params.id);
     
-    console.log(storage.items);
+    //console.log(request.body);
 for (var x = 0; x < storage.items.length; x++){
   if (storage.items[x].id == request.params.id){
     storage.items[x].name = request.body.name;
