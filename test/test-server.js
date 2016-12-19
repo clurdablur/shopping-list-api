@@ -69,6 +69,7 @@ describe('Shopping List', function() {
     			res.body.should.all.have.property('id');
     			res.body[0].id.should.be.a('number');
     			res.body[0].name.should.be.a('string');
+
     			res.body[0].id.should.equal(1);
     		    res.body[0].name.should.equal('Eggs');
     			done();

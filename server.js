@@ -11,6 +11,7 @@ var Storage = {
   } 
 };
 
+
 var createStorage = function() {
   var storage = Object.create(Storage);
   storage.items = [];
@@ -35,7 +36,6 @@ app.get('/items', function(request, response) {
 app.post('/items', jsonParser, function(request, response) {
     if (!('name' in request.body)) {
         return response.sendStatus(400);
-      // return request.body;
     }
 
     var item = storage.add(request.body.name);
@@ -52,7 +52,7 @@ app.delete('/items/:id', jsonParser, function(request, response) {
   }
 }
 storage.items = itemArr;
-    response.status(201).json(itemArr);
+    response.status(200).json(itemArr);
 });
 
 
